@@ -1,14 +1,15 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 
-import javax.swing.*;
 
 public class Gui implements ActionListener {
     static public ArrayList<BankAccount> list = new ArrayList<BankAccount>();
-    double accountBalance0=0.0, minimumBalance0=0.0,interestbalance0=0.0,maxWithLimit0=0.0;
     public String institutionName0,memberName0, accountNumber0;
+    double accountBalance0 = 0.0, minimumBalance0 = 0.0, interestbalance0 = 0.0, maxWithLimit0 = 0.0;
     int tradeLicenseNumber0;
     JTextField amount1 = new JTextField();
     JLabel error = new JLabel();
@@ -17,7 +18,7 @@ public class Gui implements ActionListener {
     JFrame accountType = new JFrame("New User");
     JFrame existing = new JFrame("Existing user");
     JFrame exist = new JFrame("Existing user function");
-
+    int checkAccount = 0;
     JLabel amount = new JLabel("Amount:");
     JLabel accountBalance1 = new JLabel();
     JLabel accountBalance = new JLabel("Account Balance:");
@@ -26,7 +27,6 @@ public class Gui implements ActionListener {
     JLabel accountnumber = new JLabel("Account Number:");
     JButton withdraw = new JButton("Withdraw");
     JButton deposit = new JButton("Deposit");
-
 
 
     JLabel name = new JLabel("Name:");
@@ -42,8 +42,8 @@ public class Gui implements ActionListener {
     JTextField maxWithLimit1 = new JTextField();
 
     JLabel institutionName = new JLabel("Institution Name:");
-    JTextField institutionName1 = new JTextField();
-    JTextField tradeLicenseNumber1 = new JTextField();
+    JTextField institutionName1 = new JTextField("");
+    JTextField tradeLicenseNumber1 = new JTextField("");
 
 /*    JTextField accountNumber1 = new JTextField();*/
 
@@ -73,8 +73,7 @@ public class Gui implements ActionListener {
     int i;
     int j=0;
 
-    public Gui()
-    {
+    public Gui() {
 
         user.setSize(500,700);
         user.getContentPane().setBackground(Color.gray);
@@ -95,6 +94,14 @@ public class Gui implements ActionListener {
         existinguser.setVisible(true);
         existinguser.setBackground(Color.white);
         existinguser.setBounds(0,101,300,30);
+
+        JButton readFromFile = new JButton("Read From File");
+        user.add(readFromFile);
+        readFromFile.setVisible(true);
+        readFromFile.setBounds(0, 151, 300, 30);
+        readFromFile.setBackground(Color.white);
+        readFromFile.addActionListener(new readFile());
+
         newuser.addActionListener(new newuser());
         existinguser.addActionListener(new existing());
 
@@ -149,6 +156,7 @@ public class Gui implements ActionListener {
             savingsaccount.addActionListener(new createsavingsaccount());
             studentaccount.addActionListener(new createStudentAccount());
             currentaccount.addActionListener(new createCurrentAccount());
+
             user.dispose();
 
         }
@@ -156,212 +164,222 @@ public class Gui implements ActionListener {
 
     }
 
-        public class createAccount implements ActionListener {
+    public class createAccount implements ActionListener {
 
-            public createAccount()
-            {
+        public createAccount() {
 
-                newUserFrame.setSize(500, 700);
-                newUserFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                newUserFrame.getContentPane().setBackground(Color.GRAY);
-                newUserFrame.setLayout(null);
-                newUserFrame.setVisible(true);
-
-
-                newUserFrame.add(name);
-                name.setVisible(true);
-                name.setBackground(Color.white);
-                name.setBounds(0, 0, 150, 50);
-
-                newUserFrame.add(name1);
-                name1.setVisible(true);
-                name1.setBackground(Color.white);
-                name1.setBounds(0, 51, 150, 30);
+            newUserFrame.setSize(500, 700);
+            newUserFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            newUserFrame.getContentPane().setBackground(Color.GRAY);
+            newUserFrame.setLayout(null);
+            newUserFrame.setVisible(true);
 
 
+            newUserFrame.add(name);
+            name.setVisible(true);
+            name.setBackground(Color.white);
+            name.setBounds(0, 0, 150, 50);
+
+            newUserFrame.add(name1);
+            name1.setVisible(true);
+            name1.setBackground(Color.white);
+            name1.setBounds(0, 51, 150, 30);
 
 
-                newUserFrame.add(aBalance);
-                aBalance.setVisible(true);
-                aBalance.setBackground(Color.white);
-                aBalance.setBounds(0, 101, 150, 50);
+            newUserFrame.add(aBalance);
+            aBalance.setVisible(true);
+            aBalance.setBackground(Color.white);
+            aBalance.setBounds(0, 101, 150, 50);
 
-                newUserFrame.add(aBalance1);
-                aBalance1.setVisible(true);
-                aBalance1.setBackground(Color.white);
-                aBalance1.setBounds(0, 151, 150, 30);
-
-
+            newUserFrame.add(aBalance1);
+            aBalance1.setVisible(true);
+            aBalance1.setBackground(Color.white);
+            aBalance1.setBounds(0, 151, 150, 30);
 
 
-                newUserFrame.add(minBalance);
-                minBalance.setVisible(true);
-                minBalance.setBackground(Color.white);
-                minBalance.setBounds(0, 201, 150, 50);
+            newUserFrame.add(minBalance);
+            minBalance.setVisible(true);
+            minBalance.setBackground(Color.white);
+            minBalance.setBounds(0, 201, 150, 50);
 
-                newUserFrame.add(minBalance1);
-                minBalance1.setVisible(true);
-                minBalance1.setBackground(Color.white);
-                minBalance1.setBounds(0, 251, 150, 30);
-
-
+            newUserFrame.add(minBalance1);
+            minBalance1.setVisible(true);
+            minBalance1.setBackground(Color.white);
+            minBalance1.setBounds(0, 251, 150, 30);
 
 
-                newUserFrame.add(maxWithLimit);
-                maxWithLimit.setVisible(true);
-                maxWithLimit.setBackground(Color.white);
-                maxWithLimit.setBounds(0, 301, 150, 50);
+            newUserFrame.add(maxWithLimit);
+            maxWithLimit.setVisible(true);
+            maxWithLimit.setBackground(Color.white);
+            maxWithLimit.setBounds(0, 301, 150, 50);
 
-                newUserFrame.add(maxWithLimit1);
-                maxWithLimit1.setVisible(true);
-                maxWithLimit1.setBackground(Color.white);
-                maxWithLimit1.setBounds(0, 351, 150, 30);
-
-
+            newUserFrame.add(maxWithLimit1);
+            maxWithLimit1.setVisible(true);
+            maxWithLimit1.setBackground(Color.white);
+            maxWithLimit1.setBounds(0, 351, 150, 30);
 
 
-                newUserFrame.add(institutionName);
-                institutionName.setVisible(true);
-                institutionName.setBackground(Color.white);
-                institutionName.setBounds(0, 401, 150, 50);
+            newUserFrame.add(institutionName);
+            institutionName.setVisible(true);
+            institutionName.setBackground(Color.white);
+            institutionName.setBounds(0, 401, 150, 50);
 
-                newUserFrame.add(institutionName1);
-                institutionName1.setVisible(true);
-                institutionName1.setBackground(Color.white);
-                institutionName1.setBounds(0, 451, 150, 30);
+            newUserFrame.add(institutionName1);
+            institutionName1.setVisible(true);
+            institutionName1.setBackground(Color.white);
+            institutionName1.setBounds(0, 451, 150, 30);
 
-                newUserFrame.add(tradeLicenseNumber3);
-                tradeLicenseNumber3.setVisible(true);
-                tradeLicenseNumber3.setBackground(Color.white);
-                tradeLicenseNumber3.setBounds(0,501,150,50);
+            newUserFrame.add(tradeLicenseNumber3);
+            tradeLicenseNumber3.setVisible(true);
+            tradeLicenseNumber3.setBackground(Color.white);
+            tradeLicenseNumber3.setBounds(0, 501, 150, 50);
 
-                newUserFrame.add(tradeLicenseNumber1);
-                tradeLicenseNumber1.setVisible(true);
-                tradeLicenseNumber1.setBackground(Color.white);
-                tradeLicenseNumber1.setBounds(0,551,150,30);
-
-
-                newUserFrame.add(Done);
-                Done.setVisible(true);
-                Done.setBackground(Color.white);
-                Done.setBounds(0,601,100,30);
-
-                newUserFrame.add(Back);
-                Back.setVisible(true);
-                Back.setBackground(Color.white);
-                Back.setBounds(101,601,100,30);
-                Back.addActionListener(new home());
-
-                user.dispose();
-                accountType.dispose();
-            }
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            newUserFrame.add(tradeLicenseNumber1);
+            tradeLicenseNumber1.setVisible(true);
+            tradeLicenseNumber1.setBackground(Color.white);
+            tradeLicenseNumber1.setBounds(0, 551, 150, 30);
 
 
+            newUserFrame.add(Done);
+            Done.setVisible(true);
+            Done.setBackground(Color.white);
+            Done.setBounds(0, 601, 100, 30);
 
+            newUserFrame.add(Back);
+            Back.setVisible(true);
+            Back.setBackground(Color.white);
+            Back.setBounds(101, 601, 100, 30);
+            Back.addActionListener(new home());
 
-
-            }
+            user.dispose();
+            accountType.dispose();
         }
 
-        public class createCurrentAccount implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
 
-            //public createAccount a = new createAccount();
+
+        }
+    }
+
+    public class createCurrentAccount implements ActionListener {
+
+        //public createAccount a = new createAccount();
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            new createAccount();
+            minBalance1.setBackground(Color.RED);
+            maxWithLimit1.setEditable(false);
+            maxWithLimit1.setText("");
+            maxWithLimit1.setBackground(Color.RED);
+            institutionName1.setEditable(false);
+            institutionName1.setBackground(Color.RED);
+            institutionName1.setText("");
+            checkAccount = 1;
+            Done.addActionListener(new createCurrentAccountDone());
+
+
+        }
+
+        private class createCurrentAccountDone implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-
-
-                minBalance1.setBackground(Color.RED);
-                maxWithLimit1.setEditable(false);
-                maxWithLimit1.setText("");
-                maxWithLimit1.setBackground(Color.RED);
-                institutionName1.setEditable(false);
-                institutionName1.setBackground(Color.RED);
-                institutionName1.setText("");
-                Done.addActionListener(new createCurrentAccountDone());
-
-
-
-
-
-            }
-
-            private class createCurrentAccountDone implements ActionListener {
-                @Override
-                public void actionPerformed(ActionEvent e) {
+                if (checkAccount == 1) {
                     memberName0 = name1.getText();
+                    name1.setText("");
                     accountBalance0 = Double.parseDouble(aBalance1.getText());
+                    aBalance1.setText("");
                     tradeLicenseNumber0 = Integer.valueOf(tradeLicenseNumber1.getText());
+                    tradeLicenseNumber1.setText("");
                     CurrentAccount ca = new CurrentAccount(memberName0,accountBalance0,tradeLicenseNumber0);
                     list.add(ca);
-
                 }
+
+
             }
         }
-        public class createStudentAccount implements ActionListener{
- //           createAccount b = new createAccount();
+    }
+
+    public class createStudentAccount implements ActionListener {
+        //           createAccount b = new createAccount();
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new createAccount();
+            minBalance1.setEditable(false);
+            minBalance1.setBackground(Color.RED);
+            minBalance1.setText("");
+            maxWithLimit1.setEditable(false);
+            maxWithLimit1.setText("");
+            maxWithLimit1.setBackground(Color.RED);
+            tradeLicenseNumber1.setEditable(false);
+            tradeLicenseNumber1.setBackground(Color.RED);
+            tradeLicenseNumber1.setText("");
+            institutionName1.setEditable(true);
+            checkAccount = 2;
+            Done.addActionListener(new createStudentAccountDone());
+
+        }
+
+
+        private class createStudentAccountDone implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                 minBalance1.setEditable(false);
-                 minBalance1.setBackground(Color.RED);
-                 minBalance1.setText("");
-                 maxWithLimit1.setEditable(false);
-                 maxWithLimit1.setText("");
-                 maxWithLimit1.setBackground(Color.RED);
-                 tradeLicenseNumber1.setEditable(false);
-                 tradeLicenseNumber1.setBackground(Color.RED);
-                 tradeLicenseNumber1.setText("");
-                 institutionName1.setEditable(true);
-                 Done.addActionListener(new createStudentAccountDone());
-
-            }
-
-
-            private class createStudentAccountDone implements ActionListener {
-                @Override
-                public void actionPerformed(ActionEvent e) {
+                if (checkAccount == 2) {
                     memberName0 = name1.getText();
                     accountBalance0 = Double.parseDouble(aBalance1.getText());
                     institutionName0 = institutionName1.getText();
                     StudentAccount sta = new StudentAccount(memberName0,accountBalance0,institutionName0);
                     list.add(sta);
-
+                    name1.setText("");
+                    aBalance1.setText("");
+                    institutionName1.setText("");
                 }
+
             }
         }
-        public class createsavingsaccount implements ActionListener {
-  //          createAccount c = new createAccount();
+    }
+
+    public class createsavingsaccount implements ActionListener {
+        //          createAccount c = new createAccount();
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new createAccount();
+            minBalance1.setEditable(false);
+            minBalance1.setBackground(Color.RED);
+            institutionName1.setEditable(false);
+            institutionName1.setBackground(Color.RED);
+            institutionName1.setText("");
+            tradeLicenseNumber1.setEditable(false);
+            tradeLicenseNumber1.setBackground(Color.RED);
+            tradeLicenseNumber1.setText("");
+            maxWithLimit1.setEditable(true);
+            checkAccount = 3;
+            Done.addActionListener(new createsavingsaccountDone());
+
+        }
+
+        private class createsavingsaccountDone implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                minBalance1.setEditable(false);
-                minBalance1.setBackground(Color.RED);
-                institutionName1.setEditable(false);
-                institutionName1.setBackground(Color.RED);
-                institutionName1.setText("");
-                tradeLicenseNumber1.setEditable(false);
-                tradeLicenseNumber1.setBackground(Color.RED);
-                maxWithLimit1.setEditable(true);
-                Done.addActionListener(new createsavingsaccountDone());
-
-             }
-
-            private class createsavingsaccountDone implements ActionListener {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
+                if (checkAccount == 3) {
                     memberName0 = name1.getText();
+
                     accountBalance0 = Double.parseDouble(aBalance1.getText());
+
                     maxWithLimit0 = Double.parseDouble(maxWithLimit1.getText());
+
                     SavingsAccount sa = new SavingsAccount(memberName0,accountBalance0,maxWithLimit0);
                     list.add(sa);
-
+                    name1.setText("");
+                    aBalance1.setText("");
+                    maxWithLimit1.setText("");
                 }
+
             }
         }
+    }
 
 
     private class home implements ActionListener {
@@ -413,16 +431,26 @@ public class Gui implements ActionListener {
 /*            String aNumber = accountNumber1.getText();*/
             boolean flag = false;
             String[] accountlist = new String[list.size()];
-            for(int j=0;j<list.size();j++)
-            {
+            for(int j = 0; j<list.size(); j++) {
                 accountlist[j]=list.get(j).accountNumber;
             }
             JComboBox accountListAll = new JComboBox(accountlist);
+            accountListAll.setBackground(Color.white);
             accountListAll.setVisible(true);
             accountListAll.setBounds(0,51,300,30);
             existing.add(accountListAll);
             i= accountListAll.getSelectedIndex();
-            done.addActionListener(new exist());
+            if (i >= 0) {
+                done.addActionListener(new exist());
+
+            } else {
+                JLabel validAccountNumber = new JLabel("Create a Account first");
+                existing.add(validAccountNumber);
+                validAccountNumber.setForeground(Color.red);
+                validAccountNumber.setVisible(true);
+                validAccountNumber.setBounds(0, 301, 300, 50);
+            }
+
             //done.addActionListener(new exist());
             user.dispose();
 /*            for( i=0;i<list.size();i++)
@@ -495,7 +523,7 @@ public class Gui implements ActionListener {
                 exist.add(accountName);
                 accountName.setBounds(0,151,150,50);
                 JLabel accountName1 = new JLabel();
-                String accountName2 = list.get(i).memberName;
+                String accountName2 = String.valueOf(list.get(i).memberName);
                 accountName1.setBackground(Color.white);
                 accountName1.setText(accountName2);
                 accountName1.setVisible(true);
@@ -527,23 +555,21 @@ public class Gui implements ActionListener {
                 interest1.setVisible(true);
                 exist.add(interest1);
                 interest1.setBounds(251,251,150,50);
-                JLabel accounttype = new JLabel("Account Type: ");
+/*                JLabel accounttype = new JLabel("Account Type: ");
                 accounttype.setVisible(true);
                 exist.add(accounttype);
                 accounttype.setBounds(0,301,150,50);
-                JLabel accounttype1 = new JLabel(list.get(i).acType);
+                JLabel accounttype1 = new JLabel();
+                accounttype1.setText(list.get(i).acType);
+                accounttype1.setVisible(true);
                 exist.add(accounttype1);
-                accounttype1.setBounds(251,301,150,50);
+                accounttype1.setBounds(251,301,150,50);*/
 
                 error.setBackground(Color.white);
                 error.setVisible(true);
                 exist.add(error);
                 error.setBounds(0,451,250,50);
                 error.setForeground(Color.red);
-
-
-
-
 
 
                 exist.add(Back);
@@ -557,13 +583,12 @@ public class Gui implements ActionListener {
                 System.out.flush();
 
 
-
             }
+
             public class Name2 implements ActionListener{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
 
 
                 }
@@ -587,35 +612,63 @@ public class Gui implements ActionListener {
                     double balance = Double.parseDouble(amount1.getText());
 
 
-                        try {
-                            if(list.get(i).accountBalance - balance <= list.get(i).minimumBalance)
-                            {
-                                error.setText("Minimum Balance limit exceeded");
+                    try {
+                        if (list.get(i).accountBalance - balance <= list.get(i).minimumBalance) {
+                            error.setText("Minimum Balance limit exceeded");
 
-                            }
-                            else if(list.get(i-1).minimumBalance > list.get(i-1).maxWithLimit)
-                            {
-                                error.setText("Maximum withdraw limit exceeded");
-                            }
-                            else
-                            {
-                                error.setVisible(false);
-                                list.get(i).accountBalance-= balance;
-                                accountBalance1.setText(String.valueOf(list.get(i).accountBalance));
-
-                            }
-
-
+                        } else if (list.get(i - 1).minimumBalance > list.get(i - 1).maxWithLimit) {
+                            error.setText("Maximum withdraw limit exceeded");
+                        } else {
+                            error.setVisible(false);
+                            list.get(i).accountBalance -= balance;
+                            accountBalance1.setText(String.valueOf(list.get(i).accountBalance));
 
                         }
-                        catch (Exception e1){
+
+
+                    } catch (Exception e1) {
 
                     }
 
 
-
                 }
             }
+        }
+    }
+
+    private class readFile implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                FileReader fr = new FileReader(new File("/home/ruhul/Desktop/JAVA/text.txt"));
+                BufferedReader br = new BufferedReader(fr);
+                String ch = br.readLine();
+                String[] line;
+                while (ch != null) {
+                    line = ch.split(" ");
+                    
+                    for (int i = 1; i < line.length; i++) {
+                        if (line[0].equals("CurrentAccount")) {
+                            CurrentAccount ca = new CurrentAccount(line[1], Double.parseDouble(line[2]), Integer.valueOf(line[3]));
+                            list.add(ca);
+                        } else if (line[0].equals("SavingAccount")) {
+                            SavingsAccount sa = new SavingsAccount(line[1], Double.parseDouble(line[2]), Double.parseDouble(line[3]));
+                            list.add(sa);
+                        } else if (line[0].equals("StudentAccount")) {
+                            StudentAccount sta = new StudentAccount(line[1], accountBalance0, institutionName0);
+                            list.add(sta);
+                        }
+
+                    }
+                    ch = br.readLine();
+                }
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+
         }
     }
 }
