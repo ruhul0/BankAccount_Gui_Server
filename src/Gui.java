@@ -28,6 +28,7 @@ public class Gui implements ActionListener {
     JButton withdraw = new JButton("Withdraw");
     JButton deposit = new JButton("Deposit");
 
+    PrintWriter pw = null;
 
     JLabel name = new JLabel("Name:");
     JTextField name1 = new JTextField();
@@ -44,6 +45,7 @@ public class Gui implements ActionListener {
     JLabel institutionName = new JLabel("Institution Name:");
     JTextField institutionName1 = new JTextField("");
     JTextField tradeLicenseNumber1 = new JTextField("");
+    int check = 0;
 
 /*    JTextField accountNumber1 = new JTextField();*/
 
@@ -294,6 +296,14 @@ public class Gui implements ActionListener {
                     tradeLicenseNumber1.setText("");
                     CurrentAccount ca = new CurrentAccount(memberName0,accountBalance0,tradeLicenseNumber0);
                     list.add(ca);
+                    try {
+                        pw = new PrintWriter("/home/ruhul/Desktop/JAVA/output");
+                        pw.println("CurrentAccount " + memberName0 + " " + accountBalance0 + " " + tradeLicenseNumber0);
+                        pw.flush();
+                        pw.close();
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
                 }
 
 
@@ -334,6 +344,16 @@ public class Gui implements ActionListener {
                     name1.setText("");
                     aBalance1.setText("");
                     institutionName1.setText("");
+
+
+                    try {
+                        pw = new PrintWriter("/home/ruhul/Desktop/JAVA/output");
+                        pw.println("StudentAccount " + memberName0 + " " + accountBalance0 + " " + institutionName0);
+                        pw.flush();
+                        pw.close();
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
                 }
 
             }
@@ -375,6 +395,15 @@ public class Gui implements ActionListener {
                     name1.setText("");
                     aBalance1.setText("");
                     maxWithLimit1.setText("");
+                    try {
+                        pw = new PrintWriter("/home/ruhul/Desktop/JAVA/output");
+                        pw.println("SavingsAccount " + memberName0 + " " + accountBalance0 + " " + maxWithLimit0);
+                        pw.flush();
+                        pw.close();
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
+
                 }
 
             }
@@ -523,9 +552,10 @@ public class Gui implements ActionListener {
                 exist.add(accountName);
                 accountName.setBounds(0,151,150,50);
                 JLabel accountName1 = new JLabel();
-                String accountName2 = String.valueOf(list.get(i).memberName);
+                //String accountName2 = String.valueOf(list.get(i).memberName);
                 accountName1.setBackground(Color.white);
-                accountName1.setText(accountName2);
+                //accountName1.setText(accountName2);
+                accountName1.setText(String.valueOf(list.get(i).memberName));
                 accountName1.setVisible(true);
                 exist.add(accountName1);
                 accountName1.setBounds(251,151,150,50);
@@ -594,30 +624,41 @@ public class Gui implements ActionListener {
                 }
             }
 
-            private class balanceDeposit implements ActionListener {
+            public class balanceDeposit implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int balance = Integer.valueOf(amount1.getText());
-                    list.get(i).accountBalance += balance;
-                    accountBalance1.setText(String.valueOf(list.get(i).accountBalance));
-                    error.setVisible(false);
+                    check = 1;
+                    try {
+                        if (check == 1) {
+                            //System.out.println("Deposit");
+                            int balance = Integer.valueOf(amount1.getText());
+                            list.get(i).accountBalance += balance;
+                            accountBalance1.setText(String.valueOf(list.get(i).accountBalance));
+                            error.setVisible(false);
+                        }
+                    } catch (NumberFormatException e1) {
+                        error.setVisible(true);
+                        error.setText("Enter any value");
+                    }
 
 
                 }
             }
 
-            private class balanceWithdaw implements ActionListener {
+            public class balanceWithdaw implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    double balance = Double.parseDouble(amount1.getText());
-
-
+                    check = 2;
                     try {
-                        if (list.get(i).accountBalance - balance <= list.get(i).minimumBalance) {
+                        if (check == 2) {
+                            //System.out.println("withdraw");
+                            int balance = Integer.valueOf(amount1.getText());
+                            if (list.get(i).accountBalance - balance < list.get(i).minimumBalance) {
                             error.setText("Minimum Balance limit exceeded");
-
-                        } else if (list.get(i - 1).minimumBalance > list.get(i - 1).maxWithLimit) {
+                                error.setVisible(true);
+                            } else if (list.get(i).minimumBalance >= list.get(i).maxWithLimit) {
                             error.setText("Maximum withdraw limit exceeded");
+                                error.setVisible(true);
                         } else {
                             error.setVisible(false);
                             list.get(i).accountBalance -= balance;
@@ -626,8 +667,9 @@ public class Gui implements ActionListener {
                         }
 
 
-                    } catch (Exception e1) {
-
+                        }
+                    } catch (NumberFormatException e1) {
+                        System.out.println("Exception");
                     }
 
 
@@ -636,37 +678,53 @@ public class Gui implements ActionListener {
         }
     }
 
-    private class readFile implements ActionListener {
+    public class readFile implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                FileReader fr = new FileReader(new File("/home/ruhul/Desktop/JAVA/text.txt"));
+                FileReader fr = new FileReader(new File("/home/ruhul/Desktop/JAVA/text"));
                 BufferedReader br = new BufferedReader(fr);
+                pw = new PrintWriter("/home/ruhul/Desktop/JAVA/output");
                 String ch = br.readLine();
                 String[] line;
                 while (ch != null) {
                     line = ch.split(" ");
-                    
+
                     for (int i = 1; i < line.length; i++) {
                         if (line[0].equals("CurrentAccount")) {
                             CurrentAccount ca = new CurrentAccount(line[1], Double.parseDouble(line[2]), Integer.valueOf(line[3]));
                             list.add(ca);
-                        } else if (line[0].equals("SavingAccount")) {
+                            pw.println("CurrentAccount " + ch);
+                            pw.flush();
+                            break;
+                        } else if (line[0].equals("SavingsAccount")) {
                             SavingsAccount sa = new SavingsAccount(line[1], Double.parseDouble(line[2]), Double.parseDouble(line[3]));
                             list.add(sa);
+                            pw.println("SavingsAccount " + ch);
+                            pw.flush();
+                            break;
                         } else if (line[0].equals("StudentAccount")) {
                             StudentAccount sta = new StudentAccount(line[1], accountBalance0, institutionName0);
                             list.add(sta);
+                            pw.println("StudentAccount " + ch);
+                            pw.flush();
+                            break;
                         }
 
                     }
                     ch = br.readLine();
                 }
+                pw.close();
             } catch (FileNotFoundException e1) {
                 e1.printStackTrace();
             } catch (IOException e1) {
                 e1.printStackTrace();
-            }
+            } /*catch (Exception e1)
+            {
+                System.out.println("Array index out of bound");
+            }*/
+
+
 
 
         }
